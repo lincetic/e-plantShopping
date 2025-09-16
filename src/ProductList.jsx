@@ -270,6 +270,20 @@ function ProductList({ onHomeClick }) {
       const calculateTotalQuantity = () => {
         return plantItems.reduce((total, item) => total + item.quantity, 0);
         };
+        useEffect(() => {
+            // Recorremos todos los productos en addedToCart
+            const updatedAddedToCart = {...addedToCart};
+          
+            // Si un producto ya no está en el carrito, lo desmarcamos
+            Object.keys(updatedAddedToCart).forEach(productName => {
+              const inCart = plantItems.find(item => item.name === productName && item.quantity > 0);
+              if (!inCart) {
+                updatedAddedToCart[productName] = false;
+              }
+            });
+          
+            setAddedToCart(updatedAddedToCart);
+          }, [plantItems]);
     return (
         <div>
             <div className="navbar" style={styleObj}>
@@ -311,9 +325,9 @@ function ProductList({ onHomeClick }) {
                             <button
                                 className={addedToCart[plant.name] ? "product-button added-to-cart" : "product-button"}
                                 onClick={() => handleAddToCart(plant)}
-                                disabled={!!addedToCart[plant.name]}
+                                disabled={addedToCart[plant.name]}
                             >
-                            {addedToCart[plant.name] ? "Added to cart" : "Add to Cart"}
+                            {addedToCart[plant.name] ? "Added to Cart" : "Add to Cart"}
                             </button>
                             </div>
                         ))}
